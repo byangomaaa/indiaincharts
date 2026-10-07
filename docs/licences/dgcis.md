@@ -8,7 +8,12 @@
 | Preferred alternatives | Trade datasets on data.gov.in (GODL) and RBI trade aggregates in the MoSPI API (RBI dataset, indicators on direction and composition of trade). |
 | Date drafted | 2026-10-07 |
 
-**To do:** before relying on DGCI&S, re-check the current copyright/disclaimer text on both sites and save a copy under `evidence/`.
+**Checked 2026-10-07 (TradeStat):** robots.txt allows all crawling. The site's disclaimer says the data "do not have any legal sanctity and is for general refrence only" and points users to DGCI&S publications; it names DGCI&S, Kolkata as the data source. No reuse restriction appears on TradeStat itself (the copyright reservation noted earlier comes from DGCI&S publications/site). Evidence: `evidence/2026-10-07/tradestat-home-with-disclaimer.html`.
+
+**Credit line:**
+> Source: Directorate General of Commercial Intelligence and Statistics (DGCI&S), Kolkata, via TradeStat (Department of Commerce) — {report}, {period}, accessed {dd Mon yyyy}. Visualised by IndiaInCharts. Not endorsed by DGCI&S or the Department of Commerce.
+
+⚠ **Data quality:** see `docs/data-inventory.md` §B2 (India→USA 2023-24 anomaly). Validate every trade series before publishing.
 
 ## Permission-request email (optional)
 

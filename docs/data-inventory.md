@@ -1,4 +1,8 @@
-# Data inventory — MoSPI eSankhyiki (Phase 0)
+# Data inventory (Phase 0)
+
+Part A: MoSPI eSankhyiki API · Part B: PPAC, TradeStat (DGCI&S), data.gov.in, NDAP
+
+# Part A — MoSPI eSankhyiki
 
 **Snapshot:** 2026-10-07, via the MoSPI MCP server (`mcp.mospi.gov.in`, "MoSPI Data Server" v2.3.0).
 **Coverage:** 27 datasets, 786 indicator/metadata combinations, 0 errors.
@@ -101,4 +105,62 @@
 
 - Actual row counts and value completeness per indicator. Metadata lists the options, but not every combination has data. To be measured when the Phase 1 adapters fetch data.
 - Standard errors and sample sizes: none seen in the metadata. Check publication annexes for the surveys we use (§12).
-- data.gov.in, NDAP, PPAC and RBI DBIE inventories (only MoSPI is covered here).
+- RBI DBIE (not yet inventoried).
+
+---
+
+# Part B — Other sources (checked 2026-10-07)
+
+## B1. PPAC (ppac.gov.in) ✅ strong state-level source
+
+**Access:** each data page links to a current **Excel file** under `/uploads/page-images/` (file names change with each update), and some pages show HTML tables loaded by AJAX. Daily metro fuel prices come as a **PDF**. robots.txt: none (the URL returns a 404 page). The scraper finds the current file link on each page, downloads it, and validates the header layout before parsing.
+
+| Dataset (file) | Geography | Periods | Frequency | Page ideas |
+|---|---|---|---|---|
+| State-wise sales/consumption of petroleum products — all products, MS (petrol), HSD (diesel), LPG and more, one sheet each (`Statewise_Sales-POL_Consumption_Final.xlsx`) | States/UTs + regional totals | **FY 2008-09 → 2025-26** (18 yrs) | Annual | ⭐ "petrol consumption by state", diesel/LPG rankings, per-capita (with population) |
+| Retail outlets (petrol pumps) by state (`Statewise_Retail_Outlets.xls`) | States | 1 Apr 2012 → 1 Apr 2026 (15 yrs) | Annual | "number of petrol pumps in {state}", ranking |
+| LPG distributors by state | States | 2001 → Aug 2026 (26 yrs) | Annual | ranking, trend |
+| Active domestic LPG customers (lakh) | States | Latest snapshot (Aug 2026) | Monthly/quarterly update | "LPG connections in {state}" |
+| PMUY (Ujjwala) connections | States | Latest snapshot (Aug 2026) | Periodic | Ujjwala by state ranking |
+| VAT/sales tax on petrol, diesel, SKO, domestic LPG (`PP_3_SalesTax_*.xls`) | States/UTs | Current rates (posted 12 Aug 2026) | On change | ⭐ "VAT on petrol in {state}", "why petrol costs more in X" |
+| Retail prices of petrol/diesel in 4 metros (PDF) | Delhi, Mumbai, Kolkata, Chennai | Daily since 16 Jun 2017 | Daily | ⭐ "petrol price today in Delhi" (high demand, hard SERP), price trend |
+| Contribution of petroleum sector to exchequer (₹ crore) | Centre & states | FY 2014-15 → Q1 2026-27 (P) | Annual | tax-take charts |
+| CGD: CNG stations and PNG connections (domestic/commercial/industrial) | States | Snapshots (latest 31 Jul 2026) | Periodic | CNG stations by state |
+| Installed refinery capacity ('000 MT) | Refinery, state | 1 Apr 2026 | Annual | refinery map/ranking |
+| Crude production, product production, imports/exports, natural gas (HTML tables / PDFs) | National | Monthly | Monthly | release pages |
+
+**Licence:** reuse free with accurate reproduction and prominent credit (`licences/ppac.md`). ⚠ **International crude/petrol/diesel prices** on PPAC are likely third-party (e.g. Platts) and are **excluded** unless a table states PPAC ownership.
+
+## B2. TradeStat (DGCI&S / Dept of Commerce) ✅ usable (owner decision)
+
+**Access:** `tradestat.commerce.gov.in` — Laravel forms; each query is a POST with a session cookie + CSRF `_token`. **No login, no CAPTCHA.** robots.txt: `Disallow:` (empty, i.e. everything allowed). `trade-analytics.commerce.gov.in` also allows all and publishes a sitemap.
+
+| Database | Contents | Periods |
+|---|---|---|
+| **EIDB** (annual) | Exports/imports by commodity (HS 2/4/6/8-digit) and by country (251 countries); commodity × country; region-wise; totals | FY 2021-22 → 2025-26 offered in the year dropdown (each report shows 5 years) |
+| **MEIDB** (monthly) | Same, monthly | Monthly |
+| FTPA, FTSPCC | Commodity-group and principal-commodity views | — |
+
+Units: US$ million, ₹ crore, quantity (8-digit only). HS code mapping changed in April 2024 (codes dropped or re-allocated, units changed), so this is a series-break note for commodity pages.
+
+**Site disclaimer (verbatim):** *"The data refrenced in the system do not have any legal sanctity and is for general refrence only. The user may like to verify official publications for DGCI&S, Kolkata for any further refrence."* Data source: DGCI&S, Kolkata. (Evidence: `licences/evidence/2026-10-07/tradestat-home-with-disclaimer.html`.)
+
+⚠ **Data-quality finding on the first test query.** For India → USA, the site returned exports of **US$155,030 million in 2023-24** (+97.4%, 35.5% share of India's exports), followed by −44.2% in 2024-25. India's total exports in the same table are ~US$437 bn, and exports to the USA should be roughly half that figure. This is a **source error**. → Trade pages need: (1) jump checks (>±40% YoY flagged), (2) reconciliation of country totals against India's total, and (3) cross-checking against RBI trade data in the MoSPI API before publishing.
+
+## B3. data.gov.in (OGD Platform) ⚠ not inventoried yet — access blocked from here
+
+- `api.data.gov.in` **refused connections** from this machine on 2026-10-07 (port 443), and `data.gov.in` returns **HTTP 403** to automated clients (Akamai bot protection). The cause is unknown: it could be an outage, rate-limiting or regional blocking. **It must be tested from GitHub Actions before we rely on it**, since our pipeline runs there.
+- The API needs a **free API key** (register at data.gov.in → My Account). Requests look like `https://api.data.gov.in/resource/{resource_id}?api-key=…&format=json&limit=…&offset=…`.
+- **Known high-value district datasets** (from search):
+  - *India Districts Factsheets of NFHS-5 (2019-21)*: district-level health, nutrition and sanitation. data.gov.in notes "API not available, can be requested", so this is a file download. Original: rchiips.org/nfhs.
+  - NFHS-5 All India and State/UT factsheets.
+- **Licence:** GODL ✅ (`licences/data-gov-in.md`).
+
+## B4. NDAP (ndap.niti.gov.in) — later phase
+
+robots.txt allows all. Search results suggest NDAP uses NDSAP/GODL-style terms (commercial use with attribution), but this was **not verified on the site** (it's a JavaScript app). Licence check is required before use (CLAUDE.md §3). It's strong for district data and a candidate for district pages.
+
+## B5. What this changes
+
+- **Topics now covered for the first cluster** (beyond MoSPI): **fuel** (state consumption, VAT, petrol pumps, LPG/Ujjwala, metro prices) and **trade** (country and commodity, with validation).
+- **District pages:** NFHS-5 district factsheets (data.gov.in, GODL) are the most realistic first district source, followed by NDAP.
