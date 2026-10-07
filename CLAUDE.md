@@ -39,11 +39,11 @@ Think *Visual Capitalist × Worldometer × Our World in Data*, focused on India,
 
 | Priority | Source | Access | Terms (as confirmed by owner / research) |
 |---|---|---|---|
-| Primary | **MoSPI** (eSankhyiki, api.mospi.gov.in) — 27 datasets | Open REST API; Swagger specs in `github.com/nso-india/esankhyiki-mcp/swagger/` | Commercial use allowed **with credit** |
+| Primary | **MoSPI** (eSankhyiki, api.mospi.gov.in) — 27 datasets | Open REST API; Swagger specs in `github.com/nso-india/esankhyiki-mcp/swagger/` | Usable **with credit** (owner decision 2026-10-07). No explicit API licence found — see `docs/licences/mospi.md`; attribution on every surface is mandatory. |
 | Secondary | **data.gov.in** | API (key) / downloads | GODL‑India: commercial use allowed; must credit provider, source, licence and dataset URL; must not imply endorsement; government names/logos/emblems are excluded from the licence |
 | Later | **NDAP** (ndap.niti.gov.in) | Downloads | "Free to download and merge" per launch statement — **verify terms before use** |
-| Conditional | **Foreign trade — DGCI&S / Dept of Commerce** (tradestat.commerce.gov.in, trade-analytics.commerce.gov.in) | Scrape / download | Copyright reserved by DGCI&S Kolkata; disclaimer appears to restrict reproducing/redistributing the underlying data. **Until written permission:** publish charts, infographics and derived analysis with attribution, but no full tables or CSV downloads of the raw data. Prefer trade datasets on data.gov.in (GODL) or RBI trade aggregates (in MoSPI API) where they suffice. Owner to request permission from DGCI&S. |
-| Conditional | **PPAC** (ppac.gov.in) | Scrape / download / manual upload | Copyright policy **not yet verified** — check the site's copyright/terms page and record it before publishing. |
+| Secondary | **Foreign trade — DGCI&S / Dept of Commerce** (tradestat.commerce.gov.in, trade-analytics.commerce.gov.in) | Scrape / download | Usable **with credit** (owner decision 2026-10-07), despite the copyright notice on the sites — see `docs/licences/dgcis.md`. Credit DGCI&S on every chart, table and CSV. Scraping rules (§3) apply. |
+| Secondary | **PPAC** (ppac.gov.in) | Scrape / download / manual upload | Reproduction free of charge if accurate, not misleading/derogatory, and **prominently** credited; third-party material excluded (checked 2026-10-07; `docs/licences/ppac.md`). |
 | Excluded | API Setu | — | Credentialed, internal/approved use only |
 | Excluded | ULIP (goulip.in) | — | Use-case review + NDA required; transactional logistics data, not publishable statistics |
 | Excluded | Unit-level microdata (microdata.gov.in) | — | Login-gated; commercial use governed by MoSPI pricing policy |
