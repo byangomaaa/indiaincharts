@@ -4,6 +4,24 @@ Newest first. Each entry: date, decision, reason, status. Owner approval require
 
 ---
 
+## 2026-10-07 — MoSPI and DGCI&S data: usable with credit (owner decision)
+
+**Decision:** The owner has assessed that MoSPI (eSankhyiki API) data and DGCI&S foreign-trade data may be used on the site, including in production, **provided every use is credited** (page, chart, infographic, embed, CSV). No launch gate on written permission. The earlier DGCI&S restriction (no full tables / CSV downloads) is lifted.
+
+**Reason:** Owner's judgement. Research on 2026-10-07 found no explicit API licence for MoSPI (attribution-only guidance; older publications reserve reproduction "for sale") and a copyright reservation on DGCI&S sites; the owner accepts this residual risk.
+
+**Mitigations kept:** full attribution on every surface; non-endorsement statement; no government names/logos/emblems in branding; aggregate data only; accuracy checks. The permission emails in `docs/licences/` remain available if the owner ever wants written confirmation. If a provider objects, we comply promptly and log it in the corrections log.
+
+**Status:** accepted (owner, 2026-10-07).
+
+## 2026-10-07 — First cluster is state-level; district pages need other sources
+
+**Decision:** The first cluster targets state- and national-level pages. District pages are deferred until district sources (NFHS-5 district factsheets, UDISE+ district, Census 2011, NDAP) are licence-checked and inventoried.
+
+**Reason:** The MoSPI API has almost no district data. Only the Economic Census has it (latest 2013-14), and only as top/bottom-N rankings per state. See `docs/data-inventory.md`.
+
+**Status:** accepted (owner, 2026-10-07).
+
 ## 2026-10-07 — Hosting: HTML on Cloudflare Pages, images/CSVs on R2 (option B)
 
 **Decision:** Page HTML is deployed to Cloudflare Pages. Infographic PNGs, CSV downloads and chart-data JSON are served from R2 under **versioned, immutable keys** (e.g. `/img/{page-id}/{data-hash}-1200x675.png`). Use a single shared embed page that loads chart data, not one embed HTML per chart.
