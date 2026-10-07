@@ -1,0 +1,25 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node / Astro
+node_modules/
+site/dist/
+site/.astro/
+
+# Local data scratch (raw snapshots live in R2, not git)
+data/raw/
+data/tmp/
