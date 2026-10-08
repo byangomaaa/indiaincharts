@@ -147,14 +147,43 @@ Units: US$ million, ₹ crore, quantity (8-digit only). HS code mapping changed 
 
 ⚠ **Data-quality finding on the first test query.** For India → USA, the site returned exports of **US$155,030 million in 2023-24** (+97.4%, 35.5% share of India's exports), followed by −44.2% in 2024-25. India's total exports in the same table are ~US$437 bn, and exports to the USA should be roughly half that figure. This is a **source error**. → Trade pages need: (1) jump checks (>±40% YoY flagged), (2) reconciliation of country totals against India's total, and (3) cross-checking against RBI trade data in the MoSPI API before publishing.
 
-## B3. data.gov.in (OGD Platform) ⚠ not inventoried yet — access blocked from here
+## B3. data.gov.in (OGD Platform) — rich but uneven; API currently down
 
-- `api.data.gov.in` **refused connections** from this machine on 2026-10-07 (port 443), and `data.gov.in` returns **HTTP 403** to automated clients (Akamai bot protection). The cause is unknown: it could be an outage, rate-limiting or regional blocking. **It must be tested from GitHub Actions before we rely on it**, since our pipeline runs there.
-- The API needs a **free API key** (register at data.gov.in → My Account). Requests look like `https://api.data.gov.in/resource/{resource_id}?api-key=…&format=json&limit=…&offset=…`.
-- **Known high-value district datasets** (from search):
-  - *India Districts Factsheets of NFHS-5 (2019-21)*: district-level health, nutrition and sanitation. data.gov.in notes "API not available, can be requested", so this is a file download. Original: rchiips.org/nfhs.
-  - NFHS-5 All India and State/UT factsheets.
-- **Licence:** GODL ✅ (`licences/data-gov-in.md`).
+**Access status (2026-10-08):**
+- `api.data.gov.in` **refuses TCP connections** (port 443) from this Mac *and* from GitHub Actions runners. The service appears to be **down for everyone**, not just blocking us. The owner's API key is stored locally (`.env`, git-ignored) and as the GitHub secret `DATA_GOV_IN_API_KEY`.
+- `www.data.gov.in` (website, including its internal `/backend/` JSON) returns **HTTP 403 Access Denied** (Akamai bot protection) to automated clients. We **do not work around this** (§3: never bypass protections).
+- **Until the API returns:** data.gov.in datasets enter through **manual upload** (`pipeline/manual/data-gov-in/`, with the metadata note). The owner downloads the CSV from the dataset page in a browser. In Phase 1, a small scheduled job will re-test the API weekly and tell us when it's back.
+
+**What the catalogue is like (fresh look).** About 230k resources, of three very different kinds:
+
+| Kind | Example | Value to us |
+|---|---|---|
+| **Recurring catalogues**: same table refreshed on a schedule | District-wise crop production; PMC daily retail prices; mandi prices; HMIS monthly | ⭐ **High**: trends, release-style pages, district depth |
+| **Census/survey reference tables** | Census 2011 PCA (district, sub-district, village); NFHS-5 district factsheets; district rainfall normals | ⭐ **High** for district profiles (old but authoritative; label the year) |
+| **One-off Parliament-answer tables**: "State/UT-wise … as on 29-01-2025", "from 2019-20 to 2023-24" | JJM tap connections; per-capita power; GST by year; EVs on Vahan | ⚠ **Medium–low**: snapshots, inconsistent definitions, may never update. Use only as dated facts, never as live series. |
+
+**Shortlist by theme** (state = S, district = D):
+
+| Theme | Dataset(s) | Geo | Period | Why it matters |
+|---|---|---|---|---|
+| **Agriculture** | *District-wise, season-wise crop production statistics* (MoA&FW): area (ha) and production (t) by crop × season × year | **D** | 1997 → recent | ⭐ Deepest district time series on the portal. "rice production in {district}", top districts by crop, state crop rankings |
+| **Prices (food)** | *Daily/weekly retail and wholesale prices* (Dept of Consumer Affairs PMC): rice, wheat, atta, dals, milk, onion, potato, tomato, oils, sugar, gur… from **~75 market centres** | City/centre | Daily | ⭐ "onion price today in {city}", price trend pages. High search demand |
+| **Prices (mandi)** | *Current daily price of various commodities from various markets (Mandi)* (AGMARKNET) | Market → D/S | Daily | ⭐ "tomato mandi rate {district}". Huge long tail; needs careful page-count control (§6.4 near-duplicates) |
+| **Population** | *Census 2011 Primary Census Abstract* (India/states; district; village/town per state); *district-wise rural/urban population by sex* | **D** (down to village) | 2011 | ⭐ Base for every district profile: population, sex ratio, literacy, SC/ST, workers. Also the **denominator** for per-capita rates everywhere |
+| **Population** | Technical Group population projections (state, age, sex) | S | 2011–2036 | Per-capita denominators for current years (label as projections) |
+| **Health** | *NFHS-5 district factsheets* (2019-21); *NFHS-5 state factsheets* | **D**, S | 2019-21 (+ NFHS-4) | ⭐ District health, nutrition, sanitation, women's indicators |
+| **Health** | *HMIS item-wise monthly report, all states and districts* | **D** (some sub-district) | Monthly | Institutional deliveries, immunisation, disease cases. ⚠ Administrative data; needs strong caveats |
+| **Weather** | *Area-weighted monthly/seasonal/annual rainfall, 36 met subdivisions* (1951→); *District rainfall normals 1951-2000* | Subdivision, **D** (normals) | Monthly, since 1951 | Monsoon pages: "rainfall in {state} this year vs normal" |
+| **Roads** | Road accidents, deaths and injuries by state/UT and city, by mode, cause and road type (MoRTH) | S, city | Annual (to 2023) | ⭐ High-interest; ⚠ **sensitive**: per-lakh-population and per-10k-vehicle rates, neutral tone |
+| **Vehicles** | Registered motor vehicles by state and category; per 1,000 population; EVs on Vahan | S | 2001–2011 series + dated snapshots | Vehicle ownership rankings; EV adoption (snapshots) |
+| **Energy** | Per-capita power consumption by state; average electricity tariff by state | S | Recent years (snapshots) | "per capita electricity consumption by state" |
+| **Tax** | GST collection (year-wise, state-wise in places) | S | 2019-20 → 2024-25 | GST by state (check completeness) |
+| **Water & schemes** | Jal Jeevan Mission tap connections; MGNREGA district "at a glance" | S, **D** | Snapshots | Scheme coverage pages. ⚠ Check for official dashboards with fuller series |
+| **Tourism** | Domestic and foreign tourist visits by state | S | Annual | "most visited state in India" |
+
+**Licence:** all GODL ✅ (`licences/data-gov-in.md`). Credit the **contributing ministry** (shown on each dataset page) plus data.gov.in, using the GODL attribution template.
+
+**Fit with MoSPI:** data.gov.in is where the **district** depth comes from (crop production, Census 2011 PCA, NFHS-5 district, HMIS). MoSPI provides the **state and national time series**. Together they make district profile hubs feasible in Phase 3 without NDAP.
 
 ## B4. NDAP (ndap.niti.gov.in) — later phase
 
@@ -163,4 +192,5 @@ robots.txt allows all. Search results suggest NDAP uses NDSAP/GODL-style terms (
 ## B5. What this changes
 
 - **Topics now covered for the first cluster** (beyond MoSPI): **fuel** (state consumption, VAT, petrol pumps, LPG/Ujjwala, metro prices) and **trade** (country and commodity, with validation).
-- **District pages:** NFHS-5 district factsheets (data.gov.in, GODL) are the most realistic first district source, followed by NDAP.
+- **Topics added from data.gov.in:** agriculture (district crop production), food prices (daily retail by city, mandi), population (Census 2011), road safety, vehicles, rainfall.
+- **District pages:** feasible from data.gov.in (crop production, Census 2011 PCA, NFHS-5 district, HMIS) via manual download while the API is down. NDAP stays a later addition.
