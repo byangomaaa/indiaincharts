@@ -5,7 +5,7 @@ Only topics we have (or can get) data for — see docs/data-inventory.md.
 Usage: python keywords/generate_candidates.py [YYYY-MM]
 Outputs in keywords/<YYYY-MM>/:
   candidates-all.csv            keyword + topic, page type, indicator, geo, source, data status
-  planner-upload.csv            all keywords, one per line, no header (upload this to Keyword Planner)
+  planner-upload.csv            header "Keyword", then all keywords one per line (upload this to Keyword Planner)
 """
 import csv
 import os
@@ -219,7 +219,7 @@ with open(os.path.join(OUT, "candidates-all.csv"), "w", newline="") as fh:
     w.writeheader()
     w.writerows(uniq)
 with open(os.path.join(OUT, "planner-upload.csv"), "w") as fh:
-    fh.write("\n".join(r["keyword"] for r in uniq) + "\n")
+    fh.write("Keyword\n" + "\n".join(r["keyword"] for r in uniq) + "\n")
 
 from collections import Counter
 print(f"{len(uniq)} keywords -> {OUT}")

@@ -5,7 +5,7 @@ Quarterly loop (CLAUDE.md §8): generate candidates → owner gets search volume
 ## This round: `2026-10/`
 
 - `candidates-all.csv`: every candidate with its topic, page type, indicator, place, data source and `data_status` (`ready` = we have the data and the licence; `licence_check` = data exists but the source still needs a licence record).
-- `planner-upload.csv`: the same 1,300 keywords, one per line, no header. **This is the file to upload.**
+- `planner-upload.csv`: a `Keyword` header row, then the same 1,300 keywords, one per line. **This is the file to upload.**
 
 Regenerate with `python keywords/generate_candidates.py 2026-10`.
 
