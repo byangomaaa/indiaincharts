@@ -189,7 +189,33 @@ Units: US$ million, ₹ crore, quantity (8-digit only). HS code mapping changed 
 
 robots.txt allows all. Search results suggest NDAP uses NDSAP/GODL-style terms (commercial use with attribution), but this was **not verified on the site** (it's a JavaScript app). Licence check is required before use (CLAUDE.md §3). It's strong for district data and a candidate for district pages.
 
-## B5. What this changes
+## B5. Original sources behind data.gov.in (checked 2026-10-09)
+
+Most data.gov.in tables are copies of what ministries publish on their own portals, which are often fresher. Reachability was tested with our honest user agent. **"Reachable" is not "licensed":** each needs a `docs/licences/<source>.md` record before use.
+
+| Data | Original source | Reachable | robots.txt / notes |
+|---|---|---|---|
+| Mandi (wholesale) prices | Agmarknet — agmarknet.gov.in | ✅ | Disallows only `/signin`, `/forgotpassword` |
+| Crop production (district × crop × season) | UPAg — upag.gov.in; DES — data.desagri.gov.in | ✅ / ❌ timeout | UPAg allows all |
+| Daily retail prices, ~75 centres | Dept of Consumer Affairs PMC — fcainfoweb.nic.in | ✅ | ASP.NET report forms |
+| Census 2011 (state → village) | censusindia.gov.in | ✅ | Excel downloads |
+| NFHS-5 district factsheets | IIPS — rchiips.org | ❌ timeout | Copy on data.gov.in; state level in MoSPI NFHS |
+| HMIS (monthly district health) | hmis.mohfw.gov.in | ✅ | |
+| Rainfall | IMD — mausam.imd.gov.in | ✅ | |
+| Road accidents | MoRTH "Road Accidents in India" — morth.nic.in | ✅ | PDF/Excel annexes; sensitive topic |
+| Vehicle registrations, EVs | Vahan dashboard — vahan.parivahan.gov.in | ✅ | Live; far fresher than data.gov.in snapshots |
+| Tap water connections | Jal Jeevan Mission — ejalshakti.gov.in | ✅ | Live, to village level |
+| MGNREGA | nrega.nic.in | ✅ | District/block reports |
+| Electricity | CEA — cea.nic.in | ✅ | General Review (annual), monthly reports |
+| Banking, state finances | RBI — rbi.org.in (Handbook of Statistics on Indian States); DBIE — dbie.rbi.org.in | ✅ / ❌ timeout | |
+| School education (district) | UDISE+ — udiseplus.gov.in | ✅ | State level already via MoSPI |
+| Many of the above, harmonised | NDAP — ndap.niti.gov.in | ✅ | robots allows all; licence to verify |
+| Official place codes | LGD — lgdirectory.gov.in | ✅ | **Required** master list (§5) |
+| Official India boundaries | Survey of India — surveyofindia.gov.in | ✅ | Required for maps (§7) |
+
+**Approach:** original portals are primary; data.gov.in (GODL, the clearest licence) is the fallback when an original is down or awkward. Licence checks to do before the first cluster: **LGD, Census 2011, Agmarknet, Vahan** (plus any other the cluster needs). Many originals are form-based dashboards: scrapable within §3 rules (no logins or CAPTCHAs), each with its own validation checks.
+
+## B6. What this changes
 
 - **Topics now covered for the first cluster** (beyond MoSPI): **fuel** (state consumption, VAT, petrol pumps, LPG/Ujjwala, metro prices) and **trade** (country and commodity, with validation).
 - **Topics added from data.gov.in:** agriculture (district crop production), food prices (daily retail by city, mandi), population (Census 2011), road safety, vehicles, rainfall.
