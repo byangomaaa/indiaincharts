@@ -5,7 +5,7 @@ Only topics we have (or can get) data for — see docs/data-inventory.md.
 Usage: python keywords/generate_candidates.py [YYYY-MM]
 Outputs in keywords/<YYYY-MM>/:
   candidates-all.csv            keyword + topic, page type, indicator, geo, source, data status
-  planner-upload-NN.txt         one keyword per line, <= 700 per file (upload these to Keyword Planner)
+  planner-upload.csv            all keywords, one per line, no header (upload this to Keyword Planner)
 """
 import csv
 import os
@@ -15,7 +15,6 @@ from datetime import date
 
 RUN = sys.argv[1] if len(sys.argv) > 1 else date.today().strftime("%Y-%m")
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), RUN)
-BATCH = 700
 
 STATES = [
     "andhra pradesh", "arunachal pradesh", "assam", "bihar", "chhattisgarh", "goa", "gujarat",
@@ -219,9 +218,8 @@ with open(os.path.join(OUT, "candidates-all.csv"), "w", newline="") as fh:
     w = csv.DictWriter(fh, fieldnames=list(uniq[0].keys()))
     w.writeheader()
     w.writerows(uniq)
-for i in range(0, len(uniq), BATCH):
-    with open(os.path.join(OUT, f"planner-upload-{i // BATCH + 1:02d}.txt"), "w") as fh:
-        fh.write("\n".join(r["keyword"] for r in uniq[i:i + BATCH]) + "\n")
+with open(os.path.join(OUT, "planner-upload.csv"), "w") as fh:
+    fh.write("\n".join(r["keyword"] for r in uniq) + "\n")
 
 from collections import Counter
 print(f"{len(uniq)} keywords -> {OUT}")
