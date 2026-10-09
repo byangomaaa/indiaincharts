@@ -39,6 +39,8 @@ header.site .wrap { display:flex; align-items:center; gap:20px; padding-block:12
 nav.top { display:flex; gap:16px; flex-wrap:wrap; font-size:.9rem }
 nav.top a { color:var(--ink-2); text-decoration:none }
 nav.top a[aria-current] { color:var(--ink); font-weight:600 }
+.theme { margin-left:auto; display:inline-flex; align-items:center; gap:6px; font:500 .82rem/1 var(--f-body); color:var(--ink-2); background:transparent; border:1px solid var(--line); border-radius:999px; padding:6px 12px; cursor:pointer }
+.theme:hover { color:var(--ink); border-color:var(--muted) }
 main { display:grid; gap:36px; padding-block:24px 48px }
 .crumbs { font-size:.85rem; color:var(--muted); display:flex; gap:6px; flex-wrap:wrap }
 .crumbs a { color:var(--muted) }
@@ -110,6 +112,7 @@ footer .wrap { display:grid; gap:6px }
 <header class="site"><div class="wrap">
   <a class="brand" href="#">India<span>In</span>Charts</a>
   <nav class="top" aria-label="Topics"><a href="#" aria-current="page">Economy</a><a href="#">Jobs</a><a href="#">Prices</a><a href="#">Education</a><a href="#">Energy</a><a href="#">Trade</a></nav>
+  <button type="button" class="theme" id="theme-toggle" aria-label="Switch to light theme"><span aria-hidden="true" id="theme-icon">☀</span><span id="theme-text">Light</span></button>
 </div></header>
 
 <main class="wrap" id="top">
@@ -229,6 +232,24 @@ footer .wrap { display:grid; gap:6px }
 
 <script>
 (function () {
+  // Theme toggle: follows the device until the reader picks; the choice is remembered on this device.
+  var root = document.documentElement, tb = document.getElementById("theme-toggle");
+  function effective() { var t = root.getAttribute("data-theme"); return t || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+  function label() {
+    var next = effective() === "dark" ? "light" : "dark";
+    document.getElementById("theme-icon").textContent = next === "light" ? "☀" : "☾";
+    document.getElementById("theme-text").textContent = next === "light" ? "Light" : "Dark";
+    tb.setAttribute("aria-label", "Switch to " + next + " theme");
+  }
+  try { var saved = localStorage.getItem("iic-theme"); if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved); } catch (e) {}
+  label();
+  tb.addEventListener("click", function () {
+    var next = effective() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next); label();
+    try { localStorage.setItem("iic-theme", next); } catch (e) {}
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", label);
+
   var body = document.body; body.classList.add("notes");
   var t = document.getElementById("notes-toggle");
   try { if (localStorage.getItem("iic-notes") === "off") { body.classList.remove("notes"); t.setAttribute("aria-pressed","false"); t.textContent = "Show section notes"; } } catch (e) {}
