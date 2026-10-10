@@ -2,7 +2,29 @@
 
 > Project brief and standing rules for Claude Code. Read this fully before any work.
 > Owner: Prasenjit Sharma (side project).
-> Status: planning complete → start at **Phase 0**.
+> Status: see **Current status** below (update it at the end of every work session).
+
+---
+
+## Current status (updated 2026-10-10)
+
+**Phase 0 — Discovery: nearly done.** Work is on branch `feature/phase0-data-inventory` → PR #1 into `staging` (not yet merged).
+
+| Phase 0 item | State | Where |
+|---|---|---|
+| Data inventory (MoSPI, PPAC, TradeStat, data.gov.in, original portals) | ✅ Done | `docs/data-inventory.md` |
+| Licence records | ✅ Done | `docs/licences/` |
+| Keyword candidates → Planner export → preliminary scores | ✅ Done | `keywords/2026-10/` |
+| First cluster (state economy, ~80 pages + inflation calculator) | ⏳ **Waiting for owner approval** | `docs/decisions.md` |
+| Page template / design system | ⏳ Prototype under owner review; `docs/design-system.md` not yet written | `site/prototype/` |
+
+**Waiting on the owner:** approve first cluster · feedback on prototype page (incl. desktop sidebar choice) · storage choice (start without R2 or with R2) · merge PR #1.
+
+**Next up:** finalise page template → write `docs/design-system.md` → close Phase 0 → Phase 1 (environments, CI, pipeline for NAS state data, Astro skeleton).
+
+**Known data issues:** state GSDP exists only on the 2011-12 base; Haryana missing from MoSPI state series; 2025-26 has 15 of 30 states; data.gov.in API down (manual downloads meanwhile); TradeStat India→USA 2023-24 anomaly. Details in `docs/decisions.md` (2026-10-09, "Data findings").
+
+**Data location today:** raw snapshots only on the owner's Mac in `data/raw/` (git-ignored, **no backup yet**) — see storage decision.
 
 ---
 
